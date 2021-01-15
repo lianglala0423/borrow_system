@@ -38,49 +38,57 @@
     <div class="container">
         <br>
         <div class="col-sm-6" style="float:none;margin:auto;">
-            <form>
+            <form method="POST">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">員工編號</label>
+                    <div class="col-sm-8">
+                      <p type="text" class="form-control-plaintext" id="staticEmail">{{ session['username'] }}</p>
+                    </div>
+                </div>
                 <div class="form-group row">
                   <label class="col-sm-4 col-form-label">物品編號</label>
                   <div class="col-sm-8">
-                    <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="a12394">
+                    <p type="text" class="form-control-plaintext" id="staticEmail" >{{ session['item_no'] }} </p>
                   </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">物品名稱</label>
                     <div class="col-sm-8">
-                      <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="mac筆電">
+                      <p type="text" readonly class="form-control-plaintext" id="staticEmail">{{ session['item_name'] }}</p>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">借用日期</label>
                     <div class="col-sm-8">
-                      <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="2021-01-09 12:00:00">
+                      <p type="text" class="form-control-plaintext" id="staticEmail"> {{ borrow_dt_info }}</p>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">歸還期限</label>
+                    <label class="col-sm-4 col-form-label">借用天數</label>
                     <div class="col-sm-8">
-                      <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="2021-01-11 12:00:00">
+                      <!-- <input type="integer" class="form-control-plaintext" id="staticEmail" name="borrow_days"> -->
+                      <select type="integer" class="form-control-plaintext" id="borrow_days" name="borrow_days">
+                        <option value="">請選擇借用天數</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                      </select>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">員工編號</label>
+                    <label class="col-sm-4 col-form-label">物品條碼</label>
                     <div class="col-sm-8">
-                      <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="esb21153">
+                      <input type="text" placeholder="請使用條碼機" class="form-control-plaintext" id="item_code" name="item_code" required>
                     </div>
                 </div>
-                <!-- <div class="form-group row">
-                  <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
-                  <div class="col-sm-10">
-                    <input type="password" class="form-control" id="inputPassword">
-                  </div>
-                </div> -->
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label"></label>
                     <div class="col-sm-8">
                         <input type="submit" name="submit" class="btn btn-info btn-md" value="submit">
+                        <p type="text" style="color:#C0392B" name="warning"> {{ warn }}</p>
                     </div>
-                    
                 </div>
                 
             </form>
