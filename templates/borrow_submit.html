@@ -42,19 +42,19 @@
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">員工編號</label>
                     <div class="col-sm-8">
-                      <p type="text" class="form-control-plaintext" id="staticEmail">{{ session['username'] }}</p>
+                      <p type="text" class="form-control-plaintext" id="staticEmail">{{ session['borrow_uid'] }} {{ session['borrow_uname'] }}</p>
                     </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-sm-4 col-form-label">物品編號</label>
                   <div class="col-sm-8">
-                    <p type="text" class="form-control-plaintext" id="staticEmail" >{{ session['item_no'] }} </p>
+                    <p type="text" class="form-control-plaintext" id="staticEmail" >{{ session['product_id'] }} </p>
                   </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">物品名稱</label>
                     <div class="col-sm-8">
-                      <p type="text" readonly class="form-control-plaintext" id="staticEmail">{{ session['item_name'] }}</p>
+                      <p type="text" readonly class="form-control-plaintext" id="staticEmail">{{ session['product_name'] }}</p>
                     </div>
                 </div>
                 <div class="form-group row">
