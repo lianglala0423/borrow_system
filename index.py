@@ -42,19 +42,23 @@ def index():
 def search():
     # 要從 form 表單拿到資料，進行資料庫查詢操作。
     name = request.form.get('name')  #需要查詢的內容, 傳回來的東西為 .html 中 attribute 為 name 的那個輸入框之值
-    print('name:', name)
     if name is None:
         name = " "
-    #查詢跟 type_name 有關的資料，返f回結果為列表
+    #查詢跟 product_category 有關的資料，返回結果為列表
     quotes = ProductInfo.query.filter(ProductInfo.product_category.like("%"+name+"%") if name is not None else "").all()
     return render_template('search.html', quotes=quotes) # 將查詢結果返回到前端
 
 @app.route('/borrow')
 def borrow():
-    return render_template('borrow.html')
+    quotes = ProductInfo.query.filter_by(in_store=True).all()
+    return render_template('borrow.html', quotes=quotes)
 
 @app.route('/sendback')
 def sendback():
+    # name = 要去接 session 帶入的員編
+    # quotes = ProductInfo.query.filter_by(borrow_uid=name).all()
+    # quotes = []
+    # return render_template('return.html', quotes=quotes)
     return render_template('return.html')
 
 if __name__ == "__main__":
