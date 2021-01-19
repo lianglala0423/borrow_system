@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, EqualTo
 from flask_sqlalchemy import SQLAlchemy
-from db_table import Item # 匯入某個 class (某個資料表)
+from db_final import ProductInfo, HistRecord # 匯入某個 class (某個資料表)
 
 app = Flask(__name__)
 # 必須自己設置一個安全碼
@@ -36,26 +36,26 @@ db = SQLAlchemy(app)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('pf_index.html')
+    return render_template('index.html')
 
 @app.route('/search', methods=['GET','POST'])
 def search():
     # 要從 form 表單拿到資料，進行資料庫查詢操作。
-    name = request.form.get('name')  #需要查詢的內容, 傳回來的東西為 .html 中 id=name 那個輸入框之值 
+    name = request.form.get('name')  #需要查詢的內容, 傳回來的東西為 .html 中 attribute 為 name 的那個輸入框之值
+    print('name:', name)
     if name is None:
         name = " "
-    #查詢跟 type_name 有關的資料，返回結果為列表
-    quotes = Item.query.filter(Item.type_name.like("%"+name+"%") if name is not None else "").all()
-    # quotes = Item.query.filter_by(type_name=type_name).all()
-    return render_template('prac_search.html', quotes=quotes) # 將查詢結果返回到前端
+    #查詢跟 type_name 有關的資料，返f回結果為列表
+    quotes = ProductInfo.query.filter(ProductInfo.product_category.like("%"+name+"%") if name is not None else "").all()
+    return render_template('search.html', quotes=quotes) # 將查詢結果返回到前端
 
 @app.route('/borrow')
 def borrow():
-    return '借用頁面'
+    return render_template('borrow.html')
 
 @app.route('/sendback')
 def sendback():
-    return '歸還頁面'
+    return render_template('return.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
