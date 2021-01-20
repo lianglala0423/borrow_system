@@ -11,29 +11,29 @@
     <title>公用物品查詢結果</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand"> E.SUN</a>
-      
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="{{url_for('index')}}">Home<span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{url_for('search')}}" data-toggle="modal">公物查詢</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{url_for('borrow')}}" data-toggle="modal">公物借出</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{url_for('sendback')}}" data-toggle="modal">公物歸還</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#lala-blog" data-toggle="modal">系統登入</a>
-            </li>
-          </ul>
-        </div>
-    </nav>
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color:      #FCFCFC;">
+      <a class="navbar-brand">E.SUN</a>
+  
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('search') }}">公物查詢</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('borrow') }}">公物借出</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('sendback') }}">公物歸還</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="#">login</a>
+          </li>
+        </ul>
+      </div>
+  </nav>
 
     <div class="container">
       <div class="row">
@@ -73,18 +73,12 @@
                 <td>{{i.borrow_uid}}</td>
                 <td>{{i.borrow_uname}}</td>
                 <td>{{i.borrow_time}}</td>
-                <td><button id="button_brw" type="button" class="btn btn-primary btn-sm" style="border-style:none;background-color:rgba(0, 128, 85, 0.801);">借用</button></td>
-                <td><button id="button_rtn" type="button" class="btn btn-primary btn-sm" style="border-style:none;background-color:rgba(197, 6, 70, 0.801);">歸還</button></td>
-              </tr>              
-              <script>
-                in_store = {{i.in_store}}                  
-                  if (in_store === true) {
-                    document.getElementById("button_rtn").disabled = true;
-                  } else {
-                    document.getElementById("button_brw").disabled = true;
-                  }
-              </script>
-              {% endfor %}  
+                <td><button onclick="location.href='borrow_submit'" type="button" class="btn btn-primary btn-sm" style="border-style:none;background-color:rgba(0, 128, 85, 0.801);" {% if not i.in_store %} disabled{% endif %} >借用</button></td>
+                <td><button onclick="location.href='sendback_submit'" type="button" class="btn btn-primary btn-sm" style="border-style:none;background-color:rgba(197, 6, 70, 0.801);" {% if i.in_store%} disabled{% endif %} >歸還</button></td>
+                <!-- 待加入: 當登入員編與i.borrow_uid不同時，也要 disable -->
+                <!-- 把這些資訊儲在某個地方，傳到下個網頁去 -->
+              </tr>                                   
+              {% endfor %}              
           </tbody>
       </table>
       </div>
