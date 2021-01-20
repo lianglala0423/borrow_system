@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, session, request
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, IntegerField, SelectField
 from wtforms.validators import DataRequired, EqualTo, InputRequired, Length, Optional, NumberRange
@@ -111,11 +112,25 @@ def borrow_submit():
     dt = format_datetime(session['borrow_time'])
     warning = ''
     if request.method == 'POST':
-        day = request.values['borrow_days']
-        item_code = request.values['item_code']
+        day = request.values.get('borrow_days')
+        item_code = request.values.get('item_code')
         if day != "":
             if item_code == session['product_id']:
                 session['return_time_pre'] = session['borrow_time'] + timedelta(days=int(day))
+                session['status'] = True
+                # 寫入資料庫
+                data = ProductInfo(
+                    product_id = session['product_id'],
+                    product_name = session['product_name'],
+                    product_category = session['product_category'],
+                    status = session['status'],
+                    borrow_uid = session['borrow_uid'],
+                    borrow_uname = session['borrow_uname'],
+                    borrow_time = session['borrow_time'],
+                    return_time_pre = session['return_time_pre']
+                )
+                db.session.add(data)
+                db.session.commit()
                 return redirect(url_for("borrow_result"))
             else:
                 warning = '物品編號不正確，請確認您借用的物品。'
@@ -126,20 +141,6 @@ def borrow_submit():
 @app.route("/borrow_result")
 def borrow_result():
     dt = format_datetime(session['return_time_pre'])
-    session['status'] = True
-    # 寫入資料庫
-    data = ProductInfo(
-        product_id = session['product_id'],
-        product_name = session['product_name'],
-        product_category = session['product_category'],
-        status = session['status'],
-        borrow_uid = session['borrow_uid'],
-        borrow_uname = session['borrow_uname'],
-        borrow_time = session['borrow_time'],
-        return_time_pre = session['return_time_pre']
-    )
-    db.session.add(data)
-    db.session.commit()
     return render_template("borrow_result.html", return_dt=dt)
 
 @app.route("/return")
@@ -150,26 +151,29 @@ def returnobj():
 def return_submit():
     # 測試用
     borrow = db.session.query(ProductInfo).\
+        order_by(ProductInfo.borrow_time).\
         filter(ProductInfo.borrow_uid == session['borrow_uid']).\
         filter(ProductInfo.status == True).first()
-
-    if borrow != None:
+    if borrow:
         session['product_id'] = borrow.product_id
         session['product_name'] = borrow.product_name
-        session['product_category'] = borrow.product_category
         session['borrow_uid'] = borrow.borrow_uid
         session['borrow_uname'] = borrow.borrow_uname
+        session['borrow_time'] = borrow.borrow_time
         session['return_time_pre'] = borrow.return_time_pre
         dt = format_datetime(session['borrow_time'])
         rdt = format_datetime(session['return_time_pre'])
         warning = ''
         if request.method == 'POST':
             item_code = request.values.get('item_code_r')
-            print(item_code, session['product_id'])
             if session['product_id'] == item_code:
                 session['return_time'] = datetime.now()
-                session['rate'] = request.values['rate']
-                session['comment'] = request.values['comment']
+                # update database
+                borrow.return_time = session['return_time']
+                borrow.status = False
+                borrow.rate = request.values['rate']
+                borrow.comment = request.values['comment']
+                db.session.commit()
                 return redirect(url_for("return_result", result='valid'))
             else:
                 warning = '物品編號不正確，請確認您歸還的物品。'
@@ -181,18 +185,6 @@ def return_submit():
 def return_result(result):
     res = []
     if result == 'valid':
-        # 資料庫操作
-        borrow = db.session.query(ProductInfo).\
-            filter(ProductInfo.borrow_uid == session['borrow_uid']).\
-            filter(ProductInfo.status == True).\
-            filter(ProductInfo.borrow_time == session['borrow_time']).\
-            filter(ProductInfo.product_id == session['product_id']).first()
-        borrow.return_time = session['return_time']
-        borrow.status = False
-        borrow.rate = session['rate']
-        borrow.comment = session['comment']
-        db.session.commit()
-
         # print結果
         rdt_res = format_datetime(session['return_time'])
         res.append(f"{session['borrow_uid']} {session['borrow_uname']} 恭喜您歸還成功！")
