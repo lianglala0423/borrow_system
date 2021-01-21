@@ -11,62 +11,62 @@
     <title>確認歸還資訊</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand">Esun</a>
-      
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" data-toggle="modal">公物查詢</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" data-toggle="modal">公物借出</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" data-toggle="modal">公物歸還</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#lala-blog" data-toggle="modal">系統登入</a>
-            </li>
-          </ul>
-        </div>
-    </nav>
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color:      #FCFCFC;">
+      <a class="navbar-brand">E.SUN</a>
+  
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('search') }}">公物查詢</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('borrow') }}">公物借出</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('sendback') }}">公物歸還</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="#">login</a>
+          </li>
+        </ul>
+      </div>
+  </nav>
     
     <div class="container">
         <br>
         <div class="col-sm-6" style="float:none;margin:auto;">
             <form method="POST">
               <div class="form-group row">
-                <label class="col-sm-4 col-form-label">員工編號</label>
+                <label class="col-sm-4 col-form-label">借用者員編</label>
                   <div class="col-sm-8">
-                    <p type="text" class="form-control-plaintext" id="staticEmail">{{ session['borrow_uid'] }} {{ session['borrow_uname'] }}</p>
+                    <p type="text" class="form-control-plaintext" id="uid"></p>
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-sm-4 col-form-label">物品編號</label>
+                  <label class="col-sm-4 col-form-label">物品類別</label>
                   <div class="col-sm-8">
-                    <p type="text" class="form-control-plaintext" id="staticEmail" >{{ session['product_id'] }} </p>
+                    <p type="text" class="form-control-plaintext" id="product_category" ></p>
                   </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">物品名稱</label>
                     <div class="col-sm-8">
-                      <p type="text" readonly class="form-control-plaintext" id="staticEmail">{{ session['product_name'] }}</p>
+                      <p type="text" readonly class="form-control-plaintext" id="product_name"></p>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">借用日期</label>
                     <div class="col-sm-8">
-                      <p type="text" class="form-control-plaintext" id="staticEmail"> {{ borrow_dt_info }}</p>
+                      <p type="text" class="form-control-plaintext" id="borrow_dt"></p>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">預計歸還日期</label>
                     <div class="col-sm-8">
-                      <p type="text" class="form-control-plaintext" id="staticEmail"> {{ return_dt_info }}</p>
+                      <p type="text" class="form-control-plaintext" id="return_dt_pred"></p>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -100,8 +100,26 @@
         </div>
     </div>
     
-    
-    
+    <script>
+      // 取得URL
+      var url = location.href;
+      url = decodeURIComponent(url);   //將已編碼的字符串進行解碼
+      //取得問號之後的值
+      var temp = url.split("?");
+      //將值再度分開
+      var vars = temp[1].split("&");
+      //一一顯示出來
+      var prodInfo = []; 
+
+      for (var i = 0; i < vars.length; i++) {
+        // 用1個 Arrary (list) 或 Object ( dict ) 儲存資料
+        prodInfo.push(vars[i]);
+      };
+      // 呈現在網頁上
+      document.getElementById("product_category").innerHTML = prodInfo[1];
+      document.getElementById("product_name").innerHTML =prodInfo[2];
+      document.getElementById("borrow_dt").innerHTML =prodInfo[3];
+  </script>     
       
     
 

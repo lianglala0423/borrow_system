@@ -11,29 +11,29 @@
     <title>您可以借用的物品清單</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand"> E.SUN</a>
-      
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="search" data-toggle="modal">公物查詢</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="borrow" data-toggle="modal">公物借出</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="sendback" data-toggle="modal">公物歸還</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#lala-blog" data-toggle="modal">系統登入</a>
-            </li>
-          </ul>
-        </div>
-    </nav>
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color:#FCFCFC;">
+      <a class="navbar-brand">E.SUN</a>
+  
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('search') }}">公物查詢</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('borrow') }}">公物借出</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('sendback') }}">公物歸還</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="#">login</a>
+          </li>
+        </ul>
+      </div>
+  </nav>
 
     <div class="container">
       <br>
@@ -67,13 +67,25 @@
               <!-- <td>{{i.borrow_uid}}</td>
               <td>{{i.borrow_uname}}</td>
               <td>{{i.borrow_time}}</td> -->
-              <td><button type="button" class="btn btn-primary btn-sm" style="border-style:none;background-color:rgba(0, 128, 85, 0.801);">我要借用</button></td>
+              <td><button id="btn_brw" onclick="javascript:send_brw('{{i.product_id}}', '{{i.product_category}}', '{{i.product_name }}');" class="btn btn-primary btn-sm" style="border-style:none;background-color:rgba(0, 128, 85, 0.801);">我要借用</button></td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
     </div>
+
+    <script>
+      function send_brw(id, category, prod_name) {
+        var value1=id;
+        var value2=category;
+        var value3=prod_name;
+        var queryString = "?" + value1 + "&" + value2 + "&" + value3;
+        var url = "borrow_submit" + queryString;
+        // url = encodeURIComponent(url); //將中文進行編碼
+        location.href=url;
+      }  
+    </script>
 
     
     
