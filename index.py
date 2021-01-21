@@ -1,7 +1,4 @@
 from flask import Flask, render_template, url_for, request, redirect, session
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, EqualTo
 from flask_sqlalchemy import SQLAlchemy
 from db_final import ProductInfo, HistRecord # 匯入某個 class (某個資料表)
 
@@ -55,11 +52,26 @@ def borrow():
 
 @app.route('/sendback')
 def sendback():
-    # name = 要去接 session 帶入的員編
-    # quotes = ProductInfo.query.filter_by(borrow_uid=name).all()
-    # quotes = []
-    # return render_template('return.html', quotes=quotes)
-    return render_template('return.html')
+    borrow_uid = 'esb001' # borrow_uid = 要去接 session 帶入的員編
+    quotes = ProductInfo.query.filter_by(borrow_uid=borrow_uid).all()
+    return render_template('return.html', quotes=quotes)
+    # return render_template('return.html')
+
+@app.route('/borrow_submit')
+def borrow_submit():
+    return render_template('borrow_submit.html')
+
+@app.route('/sendback_submit')
+def sendback_submit():
+    return render_template('return_submit.html')
+
+@app.route('/borrow_result')
+def borrow_result():
+    return render_template('borrow_result.html')
+
+@app.route('/sendback_result')
+def sendback_result():
+    return render_template('return_result.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
