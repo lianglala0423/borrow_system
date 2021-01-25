@@ -13,10 +13,10 @@ class Config(object):
     """
     # sqlalchemy 的配置參數: 要連去哪個資料庫
     POSTGRES = {
-        'user': 'postgres',
-        'password': '2618',
-        'db': 'test',
-        'host': '127.0.0.1',  
+        'user': 'yuchen',
+        'password': 'ilove5566',
+        'db': 'flask',
+        'host': 'localhost',  
         'port': '5432'}
 
     SQLALCHEMY_DATABASE_URI = 'postgresql://%(user)s:%(password)s@%(host)s:%(port)s/%(db)s' % POSTGRES
@@ -82,6 +82,7 @@ class HistRecord(db.Model):
             product_category: str
             in_store: boolean
             rate: float
+            ave_rate: float
             note: str
             borrow_uid: str
             borrow_uname: str
@@ -102,6 +103,7 @@ class HistRecord(db.Model):
     product_category = db.Column(db.String(64), nullable=False)
     in_store = db.Column(db.Boolean)
     rate = db.Column(db.Float)
+    ave_rate = db.Column(db.Float)
     note = db.Column(db.String(256))
     
     borrow_uid = db.Column(db.String(16), nullable=False)
@@ -121,16 +123,26 @@ if __name__ == '__main__':
     db.create_all() # 建立所有表
 
     # 寫入資料
-    row_0 = ProductInfo(product_id='條碼值001', product_category='筆記型電腦', product_name='LC170W001', in_store=False, rate=4.65 ,borrow_uid='esb001', borrow_uname='superman', borrow_time='2021-1-6')
-    row_1 = ProductInfo(product_id='條碼值002', product_category='轉接頭', product_name='vga2hdmi_02', in_store=False, rate=4.65 ,borrow_uid='esb004', borrow_uname='wonder_woman', borrow_time='2021-1-9') 
-    row_2 = ProductInfo(product_id='條碼值003', product_category='簡報筆', product_name='logi_01', in_store=True, rate=4.85 ,borrow_uid=None, borrow_uname=None, borrow_time=None)
-    row_3 = ProductInfo(product_id='條碼值004', product_category='投影機', product_name='12b_01', in_store=False, rate=4.95 ,borrow_uid='esb002', borrow_uname='spyderman', borrow_time='2021-1-16')
-    row_4 = ProductInfo(product_id='條碼值005', product_category='筆記型電腦', product_name='LC170W002', in_store=False, rate=4.65 ,borrow_uid='esb003', borrow_uname='batman', borrow_time='2021-1-10')
-    row_5 = ProductInfo(product_id='條碼值006', product_category='投影機', product_name='12b_02', in_store=True, rate=4.65 ,borrow_uid=None, borrow_uname=None, borrow_time=None)
-    row_6 = ProductInfo(product_id='條碼值007', product_category='簡報筆', product_name='logi_02', in_store=False, rate=3.65 ,borrow_uid='esb001', borrow_uname='superman', borrow_time='2021-1-6')
-    row_7 = ProductInfo(product_id='條碼值008', product_category='筆記型電腦', product_name='LC170W003', in_store=False, rate=4.85 ,borrow_uid='esb004', borrow_uname='wonder_woman', borrow_time='2021-1-9')
-    row_8 = ProductInfo(product_id='條碼值009', product_category='筆記型電腦', product_name='LC170W004', in_store=False, rate=3.65 ,borrow_uid='esb005', borrow_uname='ironman', borrow_time='2021-1-11')
-    row_9 = ProductInfo(product_id='條碼值010', product_category='轉接頭', product_name='vga2hdmi_01', in_store=True, rate=4.65 ,borrow_uid=None, borrow_uname=None, borrow_time=None)
+    # row_0 = ProductInfo(product_id='條碼值001', product_category='筆記型電腦', product_name='LC170W001', in_store=False, rate=4.65 ,borrow_uid='esb001', borrow_uname='superman', borrow_time='2021-1-6')
+    # row_1 = ProductInfo(product_id='條碼值002', product_category='轉接頭', product_name='vga2hdmi_02', in_store=False, rate=4.65 ,borrow_uid='esb004', borrow_uname='wonder_woman', borrow_time='2021-1-9') 
+    # row_2 = ProductInfo(product_id='條碼值003', product_category='簡報筆', product_name='logi_01', in_store=True, rate=4.85 ,borrow_uid=None, borrow_uname=None, borrow_time=None)
+    # row_3 = ProductInfo(product_id='條碼值004', product_category='投影機', product_name='12b_01', in_store=False, rate=4.95 ,borrow_uid='esb002', borrow_uname='spyderman', borrow_time='2021-1-16')
+    # row_4 = ProductInfo(product_id='條碼值005', product_category='筆記型電腦', product_name='LC170W002', in_store=False, rate=4.65 ,borrow_uid='esb003', borrow_uname='batman', borrow_time='2021-1-10')
+    # row_5 = ProductInfo(product_id='條碼值006', product_category='投影機', product_name='12b_02', in_store=True, rate=4.65 ,borrow_uid=None, borrow_uname=None, borrow_time=None)
+    # row_6 = ProductInfo(product_id='條碼值007', product_category='簡報筆', product_name='logi_02', in_store=False, rate=3.65 ,borrow_uid='esb001', borrow_uname='superman', borrow_time='2021-1-6')
+    # row_7 = ProductInfo(product_id='條碼值008', product_category='筆記型電腦', product_name='LC170W003', in_store=False, rate=4.85 ,borrow_uid='esb004', borrow_uname='wonder_woman', borrow_time='2021-1-9')
+    # row_8 = ProductInfo(product_id='條碼值009', product_category='筆記型電腦', product_name='LC170W004', in_store=False, rate=3.65 ,borrow_uid='esb005', borrow_uname='ironman', borrow_time='2021-1-11')
+    # row_9 = ProductInfo(product_id='條碼值010', product_category='轉接頭', product_name='vga2hdmi_01', in_store=True, rate=4.65 ,borrow_uid=None, borrow_uname=None, borrow_time=None)
+    row_0 = ProductInfo(product_id='條碼值001', product_category='筆記型電腦', product_name='LC170W001', in_store=True, rate=None ,borrow_uid=None, borrow_uname=None, borrow_time=None)
+    row_1 = ProductInfo(product_id='條碼值002', product_category='轉接頭', product_name='vga2hdmi_02', in_store=True, rate=None ,borrow_uid=None, borrow_uname=None, borrow_time=None) 
+    row_2 = ProductInfo(product_id='條碼值003', product_category='簡報筆', product_name='logi_01', in_store=True, rate=None ,borrow_uid=None, borrow_uname=None, borrow_time=None)
+    row_3 = ProductInfo(product_id='條碼值004', product_category='投影機', product_name='12b_01', in_store=True, rate=None ,borrow_uid=None, borrow_uname=None, borrow_time=None)
+    row_4 = ProductInfo(product_id='條碼值005', product_category='筆記型電腦', product_name='LC170W002', in_store=True, rate=None ,borrow_uid=None, borrow_uname=None, borrow_time=None)
+    row_5 = ProductInfo(product_id='條碼值006', product_category='投影機', product_name='12b_02', in_store=True, rate=None ,borrow_uid=None, borrow_uname=None, borrow_time=None)
+    row_6 = ProductInfo(product_id='條碼值007', product_category='簡報筆', product_name='logi_02', in_store=True, rate=None ,borrow_uid=None, borrow_uname=None, borrow_time=None)
+    row_7 = ProductInfo(product_id='條碼值008', product_category='筆記型電腦', product_name='LC170W003', in_store=True, rate=None ,borrow_uid=None, borrow_uname=None, borrow_time=None)
+    row_8 = ProductInfo(product_id='條碼值009', product_category='筆記型電腦', product_name='LC170W004', in_store=True, rate=None ,borrow_uid=None, borrow_uname=None, borrow_time=None)
+    row_9 = ProductInfo(product_id='條碼值010', product_category='轉接頭', product_name='vga2hdmi_01', in_store=True, rate=None ,borrow_uid=None, borrow_uname=None, borrow_time=None)
 
     # all_list = []
     # for i in range(10):

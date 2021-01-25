@@ -106,6 +106,13 @@ def search():
 def borrow():
     return render_template("borrow.html")
 
+@app.route('/sendback')
+def sendback():
+    borrow_uid = 'esb001' # borrow_uid = 要去接 session 帶入的員編
+    quotes = ProductInfo.query.filter_by(borrow_uid=borrow_uid).all()
+    return render_template('return.html', quotes=quotes)
+    # return render_template('return.html')
+
 @app.route("/borrow_submit", methods=['GET', 'POST'])
 def borrow_submit():
     session['borrow_time'] = datetime.now()
@@ -150,36 +157,40 @@ def returnobj():
 @app.route("/return_submit", methods=['POST', 'GET'])
 def return_submit():
     # 測試用
-    borrow = db.session.query(ProductInfo).\
-        order_by(ProductInfo.borrow_time).\
-        filter(ProductInfo.borrow_uid == session['borrow_uid']).\
-        filter(ProductInfo.status == True).first()
-    if borrow:
-        session['product_id'] = borrow.product_id
-        session['product_name'] = borrow.product_name
-        session['borrow_uid'] = borrow.borrow_uid
-        session['borrow_uname'] = borrow.borrow_uname
-        session['borrow_time'] = borrow.borrow_time
-        session['return_time_pre'] = borrow.return_time_pre
-        dt = format_datetime(session['borrow_time'])
-        rdt = format_datetime(session['return_time_pre'])
-        warning = ''
-        if request.method == 'POST':
-            item_code = request.values.get('item_code_r')
-            if session['product_id'] == item_code:
-                session['return_time'] = datetime.now()
-                # update database
-                borrow.return_time = session['return_time']
-                borrow.status = False
-                borrow.rate = request.values['rate']
-                borrow.comment = request.values['comment']
-                db.session.commit()
-                return redirect(url_for("return_result", result='valid'))
-            else:
-                warning = '物品編號不正確，請確認您歸還的物品。'
-        return render_template("return_submit.html", borrow_dt_info=dt, return_dt_info=rdt, warn=warning)
-    else:
-        return redirect(url_for("return_result", result='no_borrow'))
+    # borrow = db.session.query(ProductInfo).\
+    #     order_by(ProductInfo.borrow_time).\
+    #     filter(ProductInfo.borrow_uid == session['borrow_uid']).\
+    #     filter(ProductInfo.status == True).first()
+    # if borrow:
+    #     session['product_id'] = borrow.product_id
+    #     session['product_name'] = borrow.product_name
+    #     session['borrow_uid'] = borrow.borrow_uid
+    #     session['borrow_uname'] = borrow.borrow_uname
+    #     session['borrow_time'] = borrow.borrow_time
+    #     session['return_time_pre'] = borrow.return_time_pre
+    #     dt = format_datetime(session['borrow_time'])
+    #     rdt = format_datetime(session['return_time_pre'])
+    #     warning = ''
+    item_code = ""
+    if request.method == 'POST':
+        item_code = request.values.get('item_code_r')
+        # if session['product_id'] == item_code:
+        if item_code == '12345678':
+            session['return_time'] = datetime.now()
+            # update database
+            borrow.return_time = session['return_time']
+            borrow.status = False
+            borrow.rate = request.values['rate']
+            borrow.comment = request.values['comment']
+            db.session.commit()
+            return redirect(url_for("return_result", result='valid'))
+        else:
+            warning = '物品編號不正確，請確認您歸還的物品。'
+        
+    # return render_template("return_submit.html", borrow_dt_info=dt, return_dt_info=rdt, warn=warning)
+    return render_template("return_submit.html")
+    # else:
+    #     return redirect(url_for("return_result", result='no_borrow'))
 
 @app.route("/return_result/<result>", methods=['POST', 'GET'])
 def return_result(result):
@@ -197,6 +208,10 @@ def return_result(result):
 @app.route("/login", methods=['POST', 'GET'])
 def login():
     return render_template("login.html")
+
+def read_barcode():
+    item_code = input()
+    return item_code
 
 if __name__=="__main__":
     app.run(debug=True)
