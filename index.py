@@ -236,5 +236,9 @@ def sendback_result(result):
     # session.clear()
     return render_template("return_result.html", result=res)
 
+@app.route('/dashboard', methods=['GET', 'POST'])
+def dashboard():
+    return render_template("dashboard.html")
+    
 if __name__ == "__main__":
     app.run(debug=True)
