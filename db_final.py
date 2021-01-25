@@ -4,6 +4,10 @@
 # db_demo.py
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
+from datetime import datetime, timedelta
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
 
 app = Flask(__name__)
 
@@ -82,6 +86,7 @@ class HistRecord(db.Model):
             product_category: str
             in_store: boolean
             rate: float
+            ave_rate: float
             note: str
             borrow_uid: str
             borrow_uname: str
@@ -102,6 +107,7 @@ class HistRecord(db.Model):
     product_category = db.Column(db.String(64), nullable=False)
     in_store = db.Column(db.Boolean)
     rate = db.Column(db.Float)
+    ave_rate = db.Column(db.Float)
     note = db.Column(db.String(256))
     
     borrow_uid = db.Column(db.String(16), nullable=False)
@@ -116,20 +122,25 @@ class HistRecord(db.Model):
     #     """定義之後 可以讓查詢結果顯示的更直觀"""
     #     return "Role object: name=%s" % self.name
 
+class RegistForm(FlaskForm):
+    user = StringField(u"員工編號", validators=[DataRequired(message=u"請輸入正確員工編號")])
+    uname = StringField(u"員工名稱", validators=[DataRequired(message=u"請輸入正確員工編號")])
+    submit = SubmitField(u"Submit")
+
 if __name__ == '__main__':
     db.drop_all() # 清除資料庫所有資料
     db.create_all() # 建立所有表
 
     # 寫入資料
-    row_0 = ProductInfo(product_id='條碼值001', product_category='筆記型電腦', product_name='LC170W001', in_store=False, rate=4.65 ,borrow_uid='esb001', borrow_uname='superman', borrow_time='2021-1-6')
+    row_0 = ProductInfo(product_id='301010103B0042', product_category='筆記型電腦', product_name='LC170W034', in_store=True, rate=98 ,borrow_uid=None, borrow_uname=None, borrow_time=None)
     row_1 = ProductInfo(product_id='條碼值002', product_category='轉接頭', product_name='vga2hdmi_02', in_store=False, rate=4.65 ,borrow_uid='esb004', borrow_uname='wonder_woman', borrow_time='2021-1-9') 
     row_2 = ProductInfo(product_id='條碼值003', product_category='簡報筆', product_name='logi_01', in_store=True, rate=4.85 ,borrow_uid=None, borrow_uname=None, borrow_time=None)
     row_3 = ProductInfo(product_id='條碼值004', product_category='投影機', product_name='12b_01', in_store=False, rate=4.95 ,borrow_uid='esb002', borrow_uname='spyderman', borrow_time='2021-1-16')
-    row_4 = ProductInfo(product_id='條碼值005', product_category='筆記型電腦', product_name='LC170W002', in_store=False, rate=4.65 ,borrow_uid='esb003', borrow_uname='batman', borrow_time='2021-1-10')
+    row_4 = ProductInfo(product_id='301010103B1909', product_category='筆記型電腦', product_name='LC170W149',  in_store=True, rate=93 ,borrow_uid=None, borrow_uname=None, borrow_time=None)
     row_5 = ProductInfo(product_id='條碼值006', product_category='投影機', product_name='12b_02', in_store=True, rate=4.65 ,borrow_uid=None, borrow_uname=None, borrow_time=None)
     row_6 = ProductInfo(product_id='條碼值007', product_category='簡報筆', product_name='logi_02', in_store=False, rate=3.65 ,borrow_uid='esb001', borrow_uname='superman', borrow_time='2021-1-6')
-    row_7 = ProductInfo(product_id='條碼值008', product_category='筆記型電腦', product_name='LC170W003', in_store=False, rate=4.85 ,borrow_uid='esb004', borrow_uname='wonder_woman', borrow_time='2021-1-9')
-    row_8 = ProductInfo(product_id='條碼值009', product_category='筆記型電腦', product_name='LC170W004', in_store=False, rate=3.65 ,borrow_uid='esb005', borrow_uname='ironman', borrow_time='2021-1-11')
+    row_7 = ProductInfo(product_id='301010103A5402', product_category='筆記型電腦', product_name='LC170W069',  in_store=True, rate=99 ,borrow_uid=None, borrow_uname=None, borrow_time=None)
+    row_8 = ProductInfo(product_id='301010103B6679', product_category='筆記型電腦', product_name='LC170W193',  in_store=True, rate=92 ,borrow_uid=None, borrow_uname=None, borrow_time=None)
     row_9 = ProductInfo(product_id='條碼值010', product_category='轉接頭', product_name='vga2hdmi_01', in_store=True, rate=4.65 ,borrow_uid=None, borrow_uname=None, borrow_time=None)
 
     # all_list = []
