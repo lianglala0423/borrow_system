@@ -46,15 +46,15 @@ def login():
     if form.validate_on_submit():
         session['borrow_uid'] = form.user.data
         session['borrow_uname'] = form.uname.data
-        return redirect(url_for('index', uid=session['borrow_uid']))
+        return redirect(url_for('index'))
     return render_template('test_result.html', form=form)
 
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
 
-@app.route('/search/<uid>', methods=['GET','POST'])
-def search(uid):
+@app.route('/search', methods=['GET','POST'])
+def search():
     # 要從 form 表單拿到資料，進行資料庫查詢操作。
     name = request.form.get('name')  #需要查詢的內容, 傳回來的東西為 .html 中 attribute 為 name 的那個輸入框之值
     if name is None:
@@ -82,13 +82,13 @@ def search(uid):
         #     else:
         #         return redirect(url_for('login', action='return'))
         if submit == "借用":
-            return redirect(url_for('borrow_submit', uid=uid, warn='submit', count=0))
+            return redirect(url_for('borrow_submit', warn='submit', count=0))
         elif submit == "歸還":
-            return redirect(url_for('sendback_submit', uid=uid, warn='submit', count=0))
+            return redirect(url_for('sendback_submit', warn='submit', count=0))
     return render_template('search.html', quotes=quotes) # 將查詢結果返回到前端
 
-@app.route('/borrow/<uid>', methods=['GET','POST'])
-def borrow(uid):
+@app.route('/borrow', methods=['GET','POST'])
+def borrow():
     quotes = ProductInfo.query.filter_by(in_store=True).all()
     if request.method == "POST":
         session['product_id'] = request.values.get('product_id')
@@ -101,9 +101,7 @@ def borrow(uid):
         #     return redirect(url_for('borrow_submit', warn='submit', count=0))
         # else:
         #     return redirect(url_for('login', action='borrow'))
-            return redirect(url_for('borrow_submit', warn='submit', count=0))
-        else:
-            return redirect(url_for('login', action='borrow'))
+        return redirect(url_for('borrow_submit', warn='submit', count=0))
     return render_template('borrow.html', quotes=quotes)
 
 @app.route('/sendback', methods=['GET', 'POST'])
