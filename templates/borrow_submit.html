@@ -37,7 +37,7 @@
     <div class="container">
         <br>
         <div class="col-sm-6" style="float:none;margin:auto;">
-            <form method="POST">
+            <form method="POST" id="borrow_form">
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">借用者員編</label>
                     <div class="col-sm-8">
@@ -47,46 +47,47 @@
                 <div class="form-group row">
                   <label class="col-sm-4 col-form-label">物品類別</label>
                   <div class="col-sm-8">
-                    <p type="text" class="form-control-plaintext" id="product_category"></p>
+                    <p type="text" class="form-control-plaintext" id="product_category">{{ session['product_category'] }}</p>
                   </div>
               </div>
                 <div class="form-group row">
                   <label class="col-sm-4 col-form-label">物品名稱</label>
                   <div class="col-sm-8">
-                    <p type="text" class="form-control-plaintext" id="product_name" ></p>
+                    <p type="text" class="form-control-plaintext" id="product_name" >{{ session['product_name'] }}</p>
                   </div>
                 </div>                
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">借用日期</label>
                     <div class="col-sm-8">
-                      <p type="text" class="form-control-plaintext" id="borrow_date"> {{ borrow_dt_info }}</p>
+                      <!-- <p type="text" class="form-control-plaintext" id="borrow_date"> {{ borrow_dt_info }}</p> -->
+                      <input type="date" class="form-control-plaintext" id="borrow_date"  value={{ session['borrow_time'] }} style="border: none; outline: medium;" readonly>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">借用天數</label>
+                    <label class="col-sm-4 col-form-label">歸還日期</label>
                     <div class="col-sm-8">
-                      <!-- <input type="integer" class="form-control-plaintext" id="staticEmail" name="borrow_days"> -->
-                      <select type="integer" class="form-control-plaintext" id="borrow_days" name="borrow_days">
+                      <input type="date"  id="staticEmail" class="form-control-plaintext" name="expected_time" value={{ exp_time }} required>
+                      <!-- <select type="integer" class="form-control-plaintext" id="borrow_days" name="borrow_days">
                         <option value="">請選擇借用天數</option>
                         <option>1</option>
                         <option>2</option>
                         <option>3</option>
                         <option>4</option>
                         <option>5</option>
-                      </select>
+                      </select> -->
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">物品條碼</label>
                     <div class="col-sm-8">
-                      <input type="text" placeholder="請使用條碼機" class="form-control-plaintext" id="item_code" name="item_code" required>
+                      <input type="password" placeholder="請使用條碼機" class="form-control-plaintext" id="product_id" name="barcode" value="" oninput="AutoSubmit();" required>
+                      <p type="text" style="color:#C0392B" name="warning"> {{ warn }}</p>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label"></label>
                     <div class="col-sm-8" >
-                        <input type="submit" name="submit" class="btn btn-info btn-md" value="submit" onclick="location.href='borrow_result'">
-                        <p type="text" style="color:#C0392B" name="warning"> {{ warn }}</p>
+                        <input type="submit" name="submit" class="btn btn-info btn-md" value="submit" style="display: none;">
                     </div>
                 </div>
                 
@@ -112,7 +113,13 @@
         // 呈現在網頁上
         document.getElementById("product_category").innerHTML = prodInfo[1];
         document.getElementById("product_name").innerHTML =prodInfo[2];
-    </script>    
+    </script>
+
+    <script>
+      function AutoSubmit(){
+        document.getElementById("borrow_form").submit.click();
+      }
+    </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>

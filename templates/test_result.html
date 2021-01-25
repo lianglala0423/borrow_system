@@ -1,0 +1,14 @@
+{% block content %}
+<div class="container">
+<form method="POST"> <!-- form 表單 -->
+  {{form.hidden_tag()}}
+  {{form.user.label(class='form-label')}} 
+  {{form.user(class='form-control')}} 
+  <br>
+  {{form.uname.label(class='form-label')}} 
+  {{form.uname(class='form-control')}} 
+  <br>
+  {{form.submit(class='btn btn-primary')}}
+</form>
+</div>
+{% endblock %}
