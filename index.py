@@ -20,9 +20,9 @@ class Config(object):
     # sqlalchemy 的配置參數: 要連去哪個資料庫
     # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://DB_USER:PASSWORD@HOST/DATABASE'
     POSTGRES = {
-        'user': 'postgres',
-        'password': '2618',
-        'db': 'test',
+        'user': 'yuchen',
+        'password': 'ilove5566',
+        'db': 'flask',
         'host': '127.0.0.1',  
         'port': '5432'
     }

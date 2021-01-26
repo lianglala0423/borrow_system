@@ -12,9 +12,8 @@
 
     <style type="text/css">
         .jumbotron{
-            color: #ffffff;
-            background: url("https://picsum.photos/1900/400?=1") no-repeat center center / cover;
-            margin-bottom: 0;
+            background-image: url({{ url_for('static', filename='images/cat3.jpg')}});
+            background-size: cover;
         }
         .path{
             background-color: #ccc;
@@ -55,7 +54,10 @@
     <div class="container">
         <div class="row">
           <h4><br/>使用說明</h4>
-          <p> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Cum, mollitia dolore deserunt illo quasi quae quia sint aut veritatis debitis at voluptate nihil incidunt delectus optio ea fugiat quas maxime!</p>
+          <p>提供『公物查詢』、『公物借出』、『公物歸還』功能。<br>
+            使用『公物查詢』只需輸入關鍵字，便能搜尋到想找的相關公物。
+            使用『公物借出』時，將導入目前可借用的公物畫面，於想借用的公物右側按下『借用』按鈕，便可進入借用程序。
+            使用『公物歸還』時，將導入目前您待歸還的公物畫面，於想歸還的公物右側按下『歸還』按鈕，便可進入歸還程序。</p>
         </div>
         
         <div class="row">
@@ -70,7 +72,7 @@
             <h4><br/>借用公物</h4>
             <div class="card">
               <div class="card-body">
-                <p class="card-text">能夠藉由表單查看目前能借用的公物，選取想要借用的項目。<br/>須先進行系統登如才能操作。</p>
+                <p class="card-text">能夠藉由表單查看目前能借用的公物，選取想要借用的項目。<br/>須先進行系統登入才能操作。</p>
                 <a href="{{url_for('borrow')}}" class="btn btn-primary">前往</a>
               </div>
             </div>
@@ -79,7 +81,7 @@
             <h4><br/>歸還公物</h4>
             <div class="card">
               <div class="card-body">
-                <p class="card-text">能夠藉由表單查看目前待歸還的公物，選取想要歸還的項目。<br/>須先進行系統登如才能操作。</p>
+                <p class="card-text">能夠藉由表單查看目前待歸還的公物，選取想要歸還的項目。<br/>須先進行系統登入才能操作。</p>
                 <a href="{{url_for('sendback')}}" class="btn btn-primary">前往</a>
               </div>
             </div>
