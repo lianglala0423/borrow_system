@@ -159,10 +159,10 @@ def sendback_submit(warn, count):
     else:
         warning = warn
     # search hist record
-    record = HistRecord.query.filter_by(borrow_uid = session['borrow_uid'], product_id = session['product_id'], in_store = False).first()
-    # record = db.session.query(HistRecord).filter(HistRecord.borrow_uid == session['borrow_uid']).\
-    #                                         filter(HistRecord.product_id == session['product_id']).\
-    #                                         filter(HistRecord.in_store == False).first()
+    # record = HistRecord.query.filter_by(borrow_uid = session['borrow_uid'], product_id = session['product_id'], in_store = False).first()
+    record = db.session.query(HistRecord).filter(HistRecord.borrow_uid == session['borrow_uid']).\
+                                            filter(HistRecord.product_id == session['product_id']).\
+                                            filter(HistRecord.in_store == False).first()
                                             
     print('record:' , record)
     session['borrow_time'] = record.borrow_time
