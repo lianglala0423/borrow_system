@@ -29,7 +29,7 @@
             <a class="nav-link" href="{{ url_for('sendback') }}">公物歸還</a>
           </li>
           <li class="nav-item active">
-            <a class="nav-link" href="#">login</a>
+            <a class="nav-link" href="{{ url_for('dashboard') }}">管理後台</a>
           </li>
         </ul>
       </div>
@@ -41,9 +41,14 @@
         <div class="row justify-content-center align-items-center">
             <div class="card" style="width: 35rem;">
                 <img src="https://picsum.photos/500/400?=1" class="card-img-top" alt="no image">
-                <div class="card-body">
+                <!-- <div class="card-body">
                   <p class="card-text text-center ">{{ session['borrow_uid'] }} {{ session['borrow_uname'] }} <br> 
                       恭喜你借用成功！<br> 預計歸還時間為：{{return_dt}}</p>
+                </div> -->
+                <div class="card-body">
+                  {% for r in result %}
+                  <p class="card-text text-center ">{{r}}</p>
+                  {% endfor %}
                 </div>
             </div>
         </div>

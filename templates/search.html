@@ -29,7 +29,7 @@
             <a class="nav-link" href="{{ url_for('sendback') }}">公物歸還</a>
           </li>
           <li class="nav-item active">
-            <a class="nav-link" href="#">login</a>
+            <a class="nav-link" href="{{ url_for('dashboard') }}">管理後台</a>
           </li>
         </ul>
       </div>
@@ -73,8 +73,20 @@
               <td>{{i.borrow_uid}}</td>
               <td>{{i.borrow_uname}}</td>
               <td>{{i.borrow_time}}</td>
-              <td><button id="btn_brw" onclick="javascript:send_brw('{{i.product_id}}', '{{i.product_category}}', '{{i.product_name }}');" type="button" class="btn btn-primary btn-sm" style="border-style:none;background-color:rgba(0, 128, 85, 0.801);" {% if not i.in_store %} disabled{% endif %} >借用</button></td>
-              <td><button id="btn_rtn" onclick="javascript:send_rtn('{{i.product_id}}', '{{i.product_category}}', '{{i.product_name }}' , '{{i.borrow_time }}');" type="button" class="btn btn-primary btn-sm" style="border-style:none;background-color:rgba(197, 6, 70, 0.801);" {% if i.in_store%} disabled{% endif %} >歸還</button></td>
+              <!-- <td><button id="btn_brw" onclick="javascript:send_brw('{{i.product_id}}', '{{i.product_category}}', '{{i.product_name }}');" type="button" class="btn btn-primary btn-sm" style="border-style:none;background-color:rgba(0, 128, 85, 0.801);" {% if not i.in_store %} disabled{% endif %} >借用</button></td>
+              <td><button id="btn_rtn" onclick="javascript:send_rtn('{{i.product_id}}', '{{i.product_category}}', '{{i.product_name }}' , '{{i.borrow_time }}');" type="button" class="btn btn-primary btn-sm" style="border-style:none;background-color:rgba(197, 6, 70, 0.801);" {% if i.borrow_uid != oant_uid %} disabled{% endif %} >歸還</button></td> -->
+              <form method="POST">
+                <input type='text' name=product_id value={{i.product_id}} style="display: none;" readonly>
+                <input type='text' name=product_category value={{i.product_category}} style="display: none;" readonly>
+                <input type='text' name=product_name value={{i.product_name}} style="display: none;" readonly>
+                <input type='text' name=in_store value={{i.in_store}} style="display: none;" readonly>
+                <input type='number' name=rate value={{i.rate}} style="display: none;" readonly>
+                <input type='text' name=borrow_uid value={{i.borrow_uid}} style="display: none;" readonly>
+                <input type='text' name=borrow_uname value={{i.borrow_uname}} style="display: none;" readonly>
+                <input type='text' name=borrow_time value={{i.borrow_time}} style="display: none;" readonly>
+                <td><input type="submit" id="btn_brw" name="btn" class="btn btn-primary btn-sm" style="border-style:none;background-color:rgba(0, 128, 85, 0.801);" value="借用" {% if not i.in_store %} disabled{% endif %} ></td>
+                <td><input type="submit" id="btn_rtn" name="btn" class="btn btn-primary btn-sm" style="border-style:none;background-color:rgba(197, 6, 70, 0.801);" value="歸還" {% if i.borrow_uid != oant_uid %} disabled{% endif %} ></td>
+              </form>
             </tr>
             {% endfor %}          
           </tbody>

@@ -29,7 +29,7 @@
             <a class="nav-link" href="{{ url_for('sendback') }}">公物歸還</a>
           </li>
           <li class="nav-item active">
-            <a class="nav-link" href="#">login</a>
+            <a class="nav-link" href="{{ url_for('dashboard') }}">管理後台</a>
           </li>
         </ul>
       </div>
@@ -38,42 +38,45 @@
     <div class="container">
         <br>
         <div class="col-sm-6" style="float:none;margin:auto;">
-            <form method="POST">
+            <form method="POST" id="form1">
               <div class="form-group row">
                 <label class="col-sm-4 col-form-label">借用者員編</label>
                   <div class="col-sm-8">
-                    <p type="text" class="form-control-plaintext" id="uid"></p>
+                    <p type="text" class="form-control-plaintext" id="uid">{{ session['borrow_uid'] }} {{ session['borrow_uname'] }}</p>
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-sm-4 col-form-label">物品類別</label>
                   <div class="col-sm-8">
-                    <p type="text" class="form-control-plaintext" id="product_category" ></p>
+                    <p type="text" class="form-control-plaintext" id="product_category" >{{ session['product_category'] }}</p>
                   </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">物品名稱</label>
                     <div class="col-sm-8">
-                      <p type="text" readonly class="form-control-plaintext" id="product_name"></p>
+                      <p type="text" class="form-control-plaintext" id="product_name">{{ session['product_name'] }}</p>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">借用日期</label>
                     <div class="col-sm-8">
-                      <p type="text" class="form-control-plaintext" id="borrow_dt"></p>
+                      <!-- <p type="text" class="form-control-plaintext" id="borrow_dt"></p> -->
+                      <input type="date" class="form-control-plaintext" id="borrow_date"  value={{ session['borrow_time'] }} style="border: none; outline: medium;" readonly>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">預計歸還日期</label>
                     <div class="col-sm-8">
-                      <p type="text" class="form-control-plaintext" id="return_dt_pred"></p>
+                      <!-- <p type="text" class="form-control-plaintext" id="expected_time"></p> -->
+                      <input type="date" class="form-control-plaintext" id="expected_time"  value={{ session['expected_time'] }} style="border: none; outline: medium;" readonly>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">好物評分</label>
                     <div class="col-sm-8">
-                        <label for="formControlRange">拉出心目中的分數</label>
-                        <input type="range" class="form-control-range" id="formControlRange" name="rate">
+                        <label for="formControlRange">拉出心目中的分數  </label>
+                        <input type="text" style="width: 10%; border: none; outline: none;" id="rateInput" value=50 readonly>分
+                        <input type="range" class="form-control-range" id="formControlRange" name="rate" onchange="updateTextInput(this.value);">
                     </div>
                   </div>
                 <div class="form-group row">
@@ -85,14 +88,15 @@
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">物品條碼</label>
                     <div class="col-sm-8">
-                      <input type="text" placeholder="請使用條碼機" class="form-control-plaintext" id="item_code_r" name="item_code_r" required>
+                      <input type="password" style="outline:medium" placeholder="請使用條碼機" class="form-control-plaintext" 
+                        id="item_code_r" name="barcode_r" value="" oninput="formAutoSubmit();" autofocus>
+                        <p type="text" style="color:#C0392B" name="warning"> {{ warn }}</p>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label"></label>
                     <div class="col-sm-8">
-                        <input type="submit" name="submit" class="btn btn-info btn-md" value="submit" onclick="location.href='sendback_result'">
-                        <p type="text" style="color:#C0392B" name="warning"> {{ warn }}</p>
+                        <input type="submit" id="submit" name="submit" class="btn btn-info btn-md" value="submit" style="display: none;">
                     </div>
                 </div>
                 
@@ -120,7 +124,20 @@
       document.getElementById("product_name").innerHTML =prodInfo[2];
       document.getElementById("borrow_dt").innerHTML =prodInfo[3];
   </script>     
-      
+  
+  <script>
+    function updateTextInput(val) {
+      document.getElementById('rateInput').value=val;
+    }
+  </script>
+  
+  <script type="text/javascript">
+    function formAutoSubmit() {
+      if (document.getElementById("item_code_r").value != ""){
+        document.getElementById("form1").submit.click();
+      }
+    }
+  </script>
     
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
