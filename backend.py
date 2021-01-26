@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pandas as pd
+from statistics import mean
 from datetime import datetime, timedelta
 from flask import Flask, render_template, url_for, request, redirect, session
 from flask_wtf import FlaskForm
@@ -46,6 +47,53 @@ app.config.from_object(Config)
 # 創建資料庫 sqlalchemy 工具物件
 db = SQLAlchemy(app)
 
+def get_top_rate():
+
+    delta = timedelta(days=28)
+    end_date = datetime.now()
+    start_date = end_date - delta
+
+    leaderboard = db.session.query(
+        HistRecord.product_name, 
+        HistRecord.rate, #func.avg(HistRecord.rate).label('avg_rate')
+        HistRecord.comment
+    ).filter(
+        HistRecord.borrow_time > start_date,
+        HistRecord.borrow_time <= end_date,
+        HistRecord.in_store == 't'
+    ).order_by(
+        HistRecord.rate.desc()
+    ).all()
+
+    top_rate = {}
+    for data in leaderboard:
+
+        if data[0] in top_rate:
+            if data[1]:
+                top_rate[data[0]]['rate'].append(data[1]) 
+            if data[2]:
+                top_rate[data[0]]['comment'].append(data[2])
+        else:
+            top_rate[data[0]] = {'rate': [data[1]], 'comment': [data[2]]}
+
+    for i in top_rate.keys():
+        top_rate[i]['rate'] = round(mean(top_rate[i]['rate']), 1)
+
+    return top_rate
+
+def get_borrow_record():
+
+    data = db.session.query(
+        ProductInfo.borrow_uname, ProductInfo.product_name, ProductInfo.expected_time
+    ).filter(
+        ProductInfo.in_store == 'f'
+    ).order_by(
+        ProductInfo.expected_time
+    ).all()
+
+    print(data)
+    return data
+
 def get_month():
 
     date_today = datetime.now()
@@ -54,9 +102,9 @@ def get_month():
     weeklist = get_week_date(date_today, 4)
     datalist = []
     
-    for weeklist in weeklist:
-        start_date = weeklist.split('-')[0]
-        end_date = weeklist.split('-')[-1]
+    for week in weeklist:
+        start_date = week.split('-')[0]
+        end_date = week.split('-')[-1]
 
         data = db.session.query(
             HistRecord.product_category, func.count(HistRecord.product_category)
@@ -68,11 +116,16 @@ def get_month():
         ).all()
         datalist.append(data)
 
+    weeklist.reverse()
+    datalist.reverse()
+
     return weeklist, datalist
 
-def get_in_store_rate():
+def get_in_use_rate():
     global category
-    in_store_rate = {}
+
+    # query 產品借用紀錄
+    in_use_rate = {}
     total_items = db.session.query(
         ProductInfo.product_category, ProductInfo.in_store, func.count(ProductInfo.product_category)
     ).group_by(
@@ -81,19 +134,21 @@ def get_in_store_rate():
     ).all()
 
     for i in range(len(category)):
+        # 統計產品借出數量, 總數
         item_count = 0
-        in_store_count = 0
+        in_use_count = 0
         temp = [item for item in total_items if item[0] == category[i]]
         for item in temp:
             item_count = item_count + int(item[2])
         for item in temp:
-            if item[1] == True:
-                in_store_count = in_store_count + int(item[2])
+            if item[1] == False:
+                in_use_count = in_use_count + int(item[2])
+        
+        # 計算產品類別借用率
+        rate = 0 if in_use_count == 0 else (in_use_count/item_count)
+        in_use_rate[category[i]] = round(rate, 2)
 
-        rate = 0 if in_store_count == 0 else (in_store_count/item_count)
-        in_store_rate[category[i]] = round(rate, 3)
-
-    return in_store_rate
+    return in_use_rate
 
 def get_goods_stacked_bar():
     date_xaxis, query_data = get_month()
@@ -117,11 +172,11 @@ def get_goods_stacked_bar():
 
     # create graph
     c = Bar()
-    c.set_global_opts(
-        xaxis_opts=options.AxisOpts(axislabel_opts=options.LabelOpts(interval=0)))    
+    c.set_global_opts(xaxis_opts=options.AxisOpts(axislabel_opts=options.LabelOpts(interval=0)))    
     c.add_xaxis(date_xaxis)
     for idx, (prod_name, prod_data) in enumerate(hist.items()):
         c.add_yaxis(prod_name, prod_data, stack="stack"+str(idx))
+
     return c
 
 def get_week_date(datelast, weeks):
@@ -147,7 +202,7 @@ def get_week_date(datelast, weeks):
     return weeklist
 
 
-def whale_shape_liquid(rate):
+def whale_shape_liquid(cate, rate):
     shape = ("path://M367.855,428.202c-3.674-1.385-7.452-1.966-11.146-1"
             ".794c0.659-2.922,0.844-5.85,0.58-8.719 c-0.937-10.407-7."
             "663-19.864-18.063-23.834c-10.697-4.043-22.298-1.168-29.9"
@@ -164,17 +219,21 @@ def whale_shape_liquid(rate):
             "-9.444,27.679-5.719c11.858,4.491,18.565,16.6,16.719,28.643 "
             "c4.438-3.126,8.033-7.564,10.117-13.045C389.751,449.992,"
             "382.411,433.709,367.855,428.202z")
+
     liquid = Liquid()
-    liquid.add("Liquid", [rate], shape=shape, is_outline_show=False)
+    # liquid.width = '630px'
+    # liquid.height = '350px'
+    liquid.add("Liquid", [rate], shape=shape, is_outline_show=False).set_global_opts(title_opts=options.TitleOpts(title=cate, pos_left="center"))
+    # liquid.add("Liquid", [rate], shape=shape, is_outline_show=False)
     return liquid
 
 def get_graph_prod_in_store():
     global category
-    data = get_in_store_rate()
+    data = get_in_use_rate()
     in_stotr_graph_list = []
     for cate in category:
         rate = data[cate]
-        jinja_graph = Markup(whale_shape_liquid(rate).render_embed())
+        jinja_graph = Markup(whale_shape_liquid(cate, rate).render_embed())
         in_stotr_graph_list.append(jinja_graph)
     return in_stotr_graph_list
 
@@ -182,12 +241,15 @@ def get_graph_prod_in_store():
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
     global category
-    in_stotr_graph_list = get_graph_prod_in_store()
+    in_store_graph_list = get_graph_prod_in_store()
     goods_stacked_bar = get_goods_stacked_bar()
-    return render_template('dashboard.html', category=category,
-        len_category = len(category),
-        in_stotr_graph_list=in_stotr_graph_list,
-        goods_stacked_bar=Markup(goods_stacked_bar.render_embed()))
+    borrow_record = get_borrow_record()
+    top_rate = get_top_rate()
+    return render_template('dashboard.html',
+        in_store_graph_list=in_store_graph_list,
+        goods_stacked_bar=Markup(goods_stacked_bar.render_embed()),
+        borrow_record=borrow_record,
+        top_rate=top_rate)
 
 @app.route('/history', methods=['GET', 'POST'])
 def history():
